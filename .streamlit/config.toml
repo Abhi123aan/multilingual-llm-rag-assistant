@@ -1,0 +1,13 @@
+[server]
+headless = true
+port = 7860
+enableXsrfProtection = false
+enableCORS = false
+logger.level = "debug"
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = true
+
+[browser]
+gatherUsageStats = false
