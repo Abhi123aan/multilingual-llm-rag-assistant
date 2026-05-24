@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import json
 from datetime import datetime
+import os
 
 # Page Config
 st.set_page_config(
@@ -39,9 +40,12 @@ st.divider()
 with st.sidebar:
     st.header("⚙️ Configuration")
     
+    # Detect API base from environment or use default
+    default_api = os.getenv("API_BASE", "http://localhost:8000")
+    
     api_base = st.text_input(
         "API Base URL",
-        value="http://localhost:8000",
+        value=default_api,
         help="Change if deployed on different server"
     )
     
@@ -83,7 +87,11 @@ with st.sidebar:
     - **Tool Calling**: Function invocation support
     - **FastAPI**: Production-grade API
     - **Deployed on**: Hugging Face Spaces ✨
-    """)
+    
+    ### 🎯 Status
+    - API Base: `{}`
+    - Status: ✅ Ready
+    """.format(api_base))
 
 # Main Content
 col1, col2 = st.columns([2, 1])
@@ -123,14 +131,18 @@ if st.button("🚀 Send Query", use_container_width=True, type="primary"):
                     "max_tokens": max_tokens
                 }
                 
-                # Call API
-                response = requests.post(
-                    f"{api_base}/query",
-                    json=payload,
-                    timeout=30
-                )
+                # Call API with longer timeout for HF Spaces
+                try:
+                    response = requests.post(
+                        f"{api_base}/query",
+                        json=payload,
+                        timeout=60
+                    )
+                except requests.exceptions.ConnectionError:
+                    st.warning("⚠️ Backend not available. Showing demo response...")
+                    response = None
                 
-                if response.status_code == 200:
+                if response and response.status_code == 200:
                     result = response.json()
                     
                     # Display Results
@@ -138,9 +150,7 @@ if st.button("🚀 Send Query", use_container_width=True, type="primary"):
                     
                     # Response
                     st.subheader("💬 Response")
-                    st.markdown(f"""
-                    {result.get('response', 'No response generated')}
-                    """)
+                    st.markdown(result.get('response', 'No response generated'))
                     
                     # Sources
                     if result.get('sources'):
@@ -169,21 +179,25 @@ if st.button("🚀 Send Query", use_container_width=True, type="primary"):
                         'response': result.get('response', ''),
                         'language': language
                     })
-                else:
+                elif response:
                     st.error(f"❌ API Error: {response.status_code}")
                     st.write(response.text)
+                else:
+                    # Demo mode
+                    st.info("📝 Demo Mode - No backend connected")
+                    st.markdown(f"""
+                    **Your Query:** {user_query}
+                    
+                    **Demo Response:**
+                    This is a demo response from the Multilingual RAG Assistant.
+                    To enable full functionality, please set up the backend API with GROQ_API_KEY.
+                    
+                    The app is running successfully on Hugging Face Spaces! 🎉
+                    """)
         
-        except requests.exceptions.ConnectionError:
-            st.error("""
-            ❌ **Connection Error**
-            
-            Could not connect to the API backend. Make sure:
-            1. Backend is running on `{api_base}`
-            2. FastAPI server is accessible
-            3. Check your API Base URL in the sidebar
-            """)
         except Exception as e:
             st.error(f"❌ Error: {str(e)}")
+            st.info("💡 Tip: Make sure the backend API is running or check your internet connection")
 
 st.divider()
 
@@ -208,5 +222,6 @@ st.markdown("""
 **Built with ❤️ using Streamlit, FastAPI, FAISS, and LLMs**
 
 [GitHub Repository](https://github.com/Abhi123aan/multilingual-llm-rag-assistant) | 
-[Documentation](https://github.com/Abhi123aan/multilingual-llm-rag-assistant#readme)
+[Documentation](https://github.com/Abhi123aan/multilingual-llm-rag-assistant#readme) |
+[Live on HF Spaces](https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant)
 """)
