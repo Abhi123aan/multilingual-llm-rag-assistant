@@ -1,6 +1,6 @@
 # 🌐 Multilingual LLM RAG Assistant
 
-[![Hugging Face Space](https://img.shields.io/badge/🤗-Open%20in%20Spaces-blue.svg)](https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant)
+[![Hugging Face Space](https://img.shields.io/badge/🤗-Open%20in%20Spaces-blue.svg)](https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant/settings)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-black.svg)](https://github.com/Abhi123aan/multilingual-llm-rag-assistant)
 
 **Production-ready multilingual AI assistant using RAG, FAISS, and FastAPI with tool-calling support.**
