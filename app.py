@@ -1,8 +1,12 @@
 import streamlit as st
-import requests
-import json
-from datetime import datetime
+import sys
 import os
+from datetime import datetime
+from typing import List, Optional
+import time
+
+# Import the RAG system from src.api.main
+from src.api.main import RAGSystem, QueryRequest, QueryResponse, Source
 
 # Page Config
 st.set_page_config(
@@ -25,11 +29,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Initialize RAG System (cached to avoid reinitializing)
+@st.cache_resource
+def get_rag_system():
+    return RAGSystem()
+
+rag_system = get_rag_system()
+
 # Header
 st.markdown("""
 # 🌐 Multilingual LLM RAG Assistant
 
-**Bilingual RAG assistant with Streamlit, FastAPI, and source-backed responses**
+**Bilingual RAG assistant with Streamlit and source-backed responses**
 
 Deploy your queries in multiple languages and get intelligent responses with source citations!
 """)
@@ -39,15 +50,6 @@ st.divider()
 # Sidebar Configuration
 with st.sidebar:
     st.header("⚙️ Configuration")
-    
-    # Detect API base from environment or use default
-    default_api = os.getenv("API_BASE", "http://localhost:8000")
-    
-    api_base = st.text_input(
-        "API Base URL",
-        value=default_api,
-        help="Change if deployed on different server"
-    )
     
     language = st.selectbox(
         "Select Language",
@@ -85,13 +87,13 @@ with st.sidebar:
     - **RAG Framework**: FAISS vector search
     - **Multilingual**: English & Hindi support
     - **Tool Calling**: Function invocation support
-    - **FastAPI**: Validated API
+    - **Streamlit**: Integrated backend & frontend
     - **Deployed on**: Hugging Face Spaces ✨
     
     ### 🎯 Status
-    - API Base: `{}`
+    - Backend: ✅ Running (integrated)
     - Status: ✅ Ready
-    """.format(api_base))
+    """)
 
 # Main Content
 col1, col2 = st.columns([2, 1])
@@ -122,52 +124,50 @@ if st.button("🚀 Send Query", use_container_width=True, type="primary"):
     else:
         try:
             with st.spinner("⏳ Processing your query..."):
-                # Prepare request
-                payload = {
-                    "query": user_query,
-                    "language": language.lower(),
-                    "model": model_select,
-                    "temperature": temperature,
-                    "max_tokens": max_tokens
-                }
+                start_time = time.time()
                 
-                # Call API with longer timeout for HF Spaces
-                try:
-                    response = requests.post(
-                        f"{api_base}/v1/query",
-                        json=payload,
-                        timeout=60
+                # Validate query
+                if not user_query or len(user_query.strip()) == 0:
+                    st.error("❌ Query cannot be empty")
+                elif len(user_query) > 5000:
+                    st.error("❌ Query too long (max 5000 characters)")
+                else:
+                    # Process query using RAG system
+                    sources = rag_system.retrieve(user_query, top_k=3)
+                    response_text = rag_system.generate_response(
+                        user_query,
+                        sources,
+                        model=model_select,
+                        temperature=temperature,
                     )
-                except requests.exceptions.ConnectionError:
-                    st.warning("⚠️ Backend not available. Showing demo response...")
-                    response = None
-                
-                if response and response.status_code == 200:
-                    result = response.json()
+                    
+                    processing_time = time.time() - start_time
+                    tokens_used = len(user_query.split()) + len(response_text.split())
+                    detected_language = "Hindi" if any(ord(c) > 127 for c in user_query) else "English"
                     
                     # Display Results
                     st.success("✅ Query processed successfully!")
                     
                     # Response
                     st.subheader("💬 Response")
-                    st.markdown(result.get('response', 'No response generated'))
+                    st.markdown(response_text)
                     
                     # Sources
-                    if result.get('sources'):
+                    if sources:
                         st.subheader("📖 Retrieved Sources")
-                        for idx, source in enumerate(result['sources'], 1):
-                            with st.expander(f"Source {idx}: {source.get('title', 'Document')}"):
-                                st.text(source.get('content', 'No content'))
-                                st.caption(f"Relevance Score: {source.get('score', 'N/A')}")
+                        for idx, source in enumerate(sources, 1):
+                            with st.expander(f"Source {idx}: {source.title}"):
+                                st.text(source.content)
+                                st.caption(f"Relevance Score: {source.score:.2f}")
                     
                     # Metadata
                     col1, col2, col3 = st.columns(3)
                     with col1:
-                        st.metric("Processing Time", f"{result.get('processing_time', 'N/A')}s")
+                        st.metric("Processing Time", f"{processing_time:.2f}s")
                     with col2:
-                        st.metric("Tokens Used", result.get('tokens_used', 'N/A'))
+                        st.metric("Tokens Used", tokens_used)
                     with col3:
-                        st.metric("Detected Language", result.get('detected_language', language))
+                        st.metric("Detected Language", detected_language)
                     
                     # Save to history
                     if 'query_history' not in st.session_state:
@@ -176,28 +176,13 @@ if st.button("🚀 Send Query", use_container_width=True, type="primary"):
                     st.session_state.query_history.append({
                         'timestamp': datetime.now().isoformat(),
                         'query': user_query,
-                        'response': result.get('response', ''),
+                        'response': response_text,
                         'language': language
                     })
-                elif response:
-                    st.error(f"❌ API Error: {response.status_code}")
-                    st.write(response.text)
-                else:
-                    # Demo mode
-                    st.info("📝 Demo Mode - No backend connected")
-                    st.markdown(f"""
-                    **Your Query:** {user_query}
-                    
-                    **Demo Response:**
-                    This is a demo response from the Multilingual RAG Assistant.
-                    To enable full functionality, please set up the backend API with GROQ_API_KEY.
-                    
-                    The app is running successfully on Hugging Face Spaces! 🎉
-                    """)
         
         except Exception as e:
             st.error(f"❌ Error: {str(e)}")
-            st.info("💡 Tip: Make sure the backend API is running or check your internet connection")
+            st.info("💡 Please try again or contact support")
 
 st.divider()
 
@@ -223,5 +208,5 @@ st.markdown("""
 
 [GitHub Repository](https://github.com/Abhi123aan/multilingual-llm-rag-assistant) | 
 [Documentation](https://github.com/Abhi123aan/multilingual-llm-rag-assistant#readme) |
-[Live on HF Spaces](https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant)
+[Report Issues](https://github.com/Abhi123aan/multilingual-llm-rag-assistant/issues)
 """)
