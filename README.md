@@ -184,46 +184,7 @@ docker run -p 7860:7860 \
 docker-compose up --build
 ```
 
-## 📝 Usage Examples
 
-### Example 1: English Query
-```
-Query: "What are the benefits of machine learning?"
-Language: English
-Model: groq-mixtral
-```
-
-### Example 2: Hindi Query
-```
-Query: "मशीन लर्निंग के क्या लाभ हैं?"
-Language: Hindi
-Model: groq-mixtral
-```
-
-## 🚀 Deployment to Hugging Face Spaces
-
-1. **Create a new Space**:
-   - Go to https://huggingface.co/spaces
-   - Click "Create new Space"
-   - Select **Docker** as SDK
-   - Name it `multilingual-llm-rag-assistant`
-
-2. **Add Secrets** (in Space Settings):
-   - `GROQ_API_KEY`: Your Groq API key
-
-3. **Push Code**:
-   ```bash
-   git clone https://huggingface.co/spaces/YOUR_USERNAME/multilingual-llm-rag-assistant
-   cd multilingual-llm-rag-assistant
-   git remote add github https://github.com/Abhi123aan/multilingual-llm-rag-assistant.git
-   git pull github main
-   git push
-   ```
-
-4. **Space URL**:
-   ```
-   https://huggingface.co/spaces/YOUR_USERNAME/multilingual-llm-rag-assistant
-   ```
 
 ## 📊 Performance
 
@@ -261,7 +222,7 @@ pip install --upgrade -r requirements.txt
 
 - **FastAPI Docs**: http://localhost:8000/docs
 - **GitHub**: https://github.com/Abhi123aan/multilingual-llm-rag-assistant
-- **Hugging Face**: https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant
+- **Hugging Face**: [https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant](https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant/settings)
 
 ## 📄 License
 
@@ -285,4 +246,4 @@ For issues, questions, or suggestions:
 
 **Built with ❤️ using FastAPI, Streamlit, FAISS, and LLMs**
 
-**Live Demo**: 🎯 [https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant](https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant)
+**Live Demo**: 🎯 [https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant/settings](https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant/settings)
