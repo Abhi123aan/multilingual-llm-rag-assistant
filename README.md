@@ -21,7 +21,7 @@
 ### **Option 1: Hugging Face Spaces (Easiest)**
 
 Visit the deployed version: 
-**👉 [https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant](https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant)**
+**👉 [https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant/settings](https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant/settings)**
 
 No setup required! Just ask your questions in English or Hindi.
 
