@@ -1,5 +1,4 @@
 import faiss
-import pickle
 from sentence_transformers import SentenceTransformer
 
 class VectorStore:

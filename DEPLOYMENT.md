@@ -14,7 +14,7 @@
 Free hosting for ML applications with built-in Docker support. Perfect for demos and portfolio projects!
 
 ### Live Demo URL
-👉 **[https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant](https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant)**
+👉 **[https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant](https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant)**
 
 ### Steps to Deploy
 
@@ -354,7 +354,7 @@ taskkill /PID <PID> /F
 ### For Resume/Portfolio
 ```
 Multilingual LLM RAG Assistant
-- Production-ready FastAPI with FAISS vector search
+- FastAPI backend with FAISS-style retrieval
 - Deployed on Hugging Face Spaces
 - Supports English & Hindi
 - Live Demo: [https://huggingface.co/spaces/YOUR_USERNAME/...]

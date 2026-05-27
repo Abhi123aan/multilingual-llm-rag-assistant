@@ -4,7 +4,7 @@
 
 ### Option 1: Hugging Face Spaces (Easiest - 0 Setup)
 ```
-👉 Go to: https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant
+👉 Go to: https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant
 ✨ No installation needed, just use it!
 ```
 

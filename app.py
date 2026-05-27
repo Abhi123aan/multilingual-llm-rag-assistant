@@ -29,7 +29,7 @@ st.markdown("""
 st.markdown("""
 # 🌐 Multilingual LLM RAG Assistant
 
-**Production-ready multilingual AI assistant with RAG, FAISS, and FastAPI**
+**Bilingual RAG assistant with Streamlit, FastAPI, and source-backed responses**
 
 Deploy your queries in multiple languages and get intelligent responses with source citations!
 """)
@@ -85,7 +85,7 @@ with st.sidebar:
     - **RAG Framework**: FAISS vector search
     - **Multilingual**: English & Hindi support
     - **Tool Calling**: Function invocation support
-    - **FastAPI**: Production-grade API
+    - **FastAPI**: Validated API
     - **Deployed on**: Hugging Face Spaces ✨
     
     ### 🎯 Status
@@ -134,7 +134,7 @@ if st.button("🚀 Send Query", use_container_width=True, type="primary"):
                 # Call API with longer timeout for HF Spaces
                 try:
                     response = requests.post(
-                        f"{api_base}/query",
+                        f"{api_base}/v1/query",
                         json=payload,
                         timeout=60
                     )
@@ -223,5 +223,5 @@ st.markdown("""
 
 [GitHub Repository](https://github.com/Abhi123aan/multilingual-llm-rag-assistant) | 
 [Documentation](https://github.com/Abhi123aan/multilingual-llm-rag-assistant#readme) |
-[Live on HF Spaces](https://huggingface.co/spaces/Abhi123aan/multilingual-llm-rag-assistant)
+[Live on HF Spaces](https://huggingface.co/spaces/1Abhi1221/multilingual-llm-rag-assistant)
 """)

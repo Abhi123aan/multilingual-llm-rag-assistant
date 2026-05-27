@@ -1,7 +1,7 @@
 from transformers import pipeline
 from langdetect import detect
-from app.prompts import build_prompt
-from app.tools import search_documents
+from src.rag.prompts import build_prompt
+from src.rag.tools import search_documents
 
 class RAGPipeline:
     def __init__(self, vector_store, model_name):
